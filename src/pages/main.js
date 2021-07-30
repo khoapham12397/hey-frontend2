@@ -11,6 +11,7 @@ import {connect} from "react-redux";
 import {isAuthenticated, isEmptyString} from "../utils/utils";
 import {Redirect} from "react-router-dom";
 import $ from "jquery";
+import {api} from '../api/api';
 
 
 const {Header, Content, Footer, Sider} = Layout;
@@ -84,6 +85,25 @@ class Main extends React.Component {
               <Menu.Item key="2">
                 <Icon type="bars" style={{fontSize: 30}}/>
               </Menu.Item>
+              <button style = {{width : "80px", height: "40px", color: "black"}}
+                onClick ={e=>{
+
+                  api.get('http://localhost:8081/api/wallet/protected/getBalance',null)
+                  .then(res=> {alert(JSON.stringify(res));});
+                }}>balance</button>
+                <button style = {{width : "80px", height: "40px", color: "black"}}
+                onClick ={e=>{
+                
+                  api.get('http://localhost:8081/api/wallet/protected/profile',null)
+                  .then(res=> {alert(JSON.stringify(res));});
+                }}>profile</button>
+                  <button style = {{width : "80px", height: "40px", color: "black"}}
+                onClick ={e=>{
+                  let payload ={hashedPin : 'e10adc3949ba59abbe56e057f20f883e', identity: '211122223',
+                  email : 'xyz@gmail.com' , phone :'2000111100'};
+                  api.post('http://localhost:8081/api/wallet/protected/registerWallet',JSON.stringify(payload))
+                  .then(res=> {alert(JSON.stringify(res));});
+                }}>registerWallet</button>
             </Menu>
           </Sider>
           <Sider
