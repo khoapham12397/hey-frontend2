@@ -5,6 +5,7 @@ import StartChatGroup from "./start-chat-group";
 import {connect} from 'react-redux';
 import {changeMessageHeader, loadChatContainer, loadChatList, userSelected} from "../actions/chatAction";
 import {Scrollbars} from 'react-custom-scrollbars';
+import {checkWallet,loadBalance} from '../actions/walletAction2';
 
 class ChatList extends React.Component {
   constructor(props) {
@@ -17,9 +18,11 @@ class ChatList extends React.Component {
 
   componentDidMount() {
     this.props.loadChatList();
+    this.props.getBalance();
   }
 
   handleChangeChatItem(event) {
+   
     this.props.userSelected(event.key);
     this.props.loadChatContainer(event.key);
     for (var i = 0; i < this.props.chatList.length; i ++) {
@@ -62,6 +65,7 @@ class ChatList extends React.Component {
                     <div className="unread">{item.unread}</div>
                     : ''
                   }
+
                 </Menu.Item>
               )}
             </Menu>
@@ -85,19 +89,17 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    loadChatList() {
-      dispatch(loadChatList())
-    },
-    loadChatContainer(sessionId) {
-      dispatch(loadChatContainer(sessionId))
-    },
+    loadChatList : () => dispatch(loadChatList())
+    ,
+    loadChatContainer : (sessionId) => dispatch(loadChatContainer(sessionId))
+    ,
     changeMessageHeader(avatar, title, groupchat) {
       dispatch(changeMessageHeader(avatar, title, groupchat))
     },
     userSelected(sessionId) {
       dispatch(userSelected(sessionId))
-    }
-
+    },
+    getBalance : () => dispatch(loadBalance())
   }
 }
 

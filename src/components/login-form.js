@@ -3,7 +3,7 @@ import {Button, Form, Icon, Input} from 'antd';
 import {withRouter} from 'react-router-dom';
 import {api} from '../api/api';
 import {setJwtToStorage, setUserIdToStorage} from "../utils/utils";
-
+import {checkWallet} from '../actions/walletAction';
 const FormItem = Form.Item;
 
 class NormalLoginForm extends React.Component {
@@ -31,6 +31,7 @@ class NormalLoginForm extends React.Component {
             setJwtToStorage(res.data.data.jwt);
             setUserIdToStorage(res.data.data.userId);
             this.props.history.push('/');
+            
           })
       }
     });
@@ -73,3 +74,4 @@ class NormalLoginForm extends React.Component {
 }
 
 export const LoginForm = withRouter(Form.create()(NormalLoginForm));
+// non tu dong sinh ra cai dang giong noa :

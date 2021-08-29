@@ -12,7 +12,16 @@ import {isAuthenticated, isEmptyString} from "../utils/utils";
 import {Redirect} from "react-router-dom";
 import $ from "jquery";
 import {api} from '../api/api';
-
+import {WalletMenu} from  '../components/wallet-menu.js';
+import Transactions from '../components/transactions.js';
+import FullProfile from '../components/full-profile';
+import {Topup} from '../components/topup-form';
+import {RegisterWallet} from '../components/register-wallet'; 
+import {TransferForm} from '../components/sendp2pform';
+import {PinForm} from '../components/pin';
+import {SendGift } from '../components/send-present-form';
+import {setTopupPopup,setRegisterPopup} from '../actions/walletAction2';
+import {RegisterWalletForm} from '../components/register-wallet-form';
 
 const {Header, Content, Footer, Sider} = Layout;
 const {TextArea} = Input;
@@ -21,25 +30,40 @@ class Main extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      menuaction: 1
+      menuaction: 1, mainPanel : 0 , tsxType : null
     };
     this.handleMainMenuChange = this.handleMainMenuChange.bind(this);
     this.handleMessageEnter = this.handleMessageEnter.bind(this);
     this.handleSendClick = this.handleSendClick.bind(this);
+    this.setChangePanel = this.setChangePanel.bind(this);
   };
 
   componentDidMount() {
     this.props.initialWebSocket();
   }
 
-  componentWillUnmount() {
+  componentDidUpdate() {
 
   }
-
+  
   handleMainMenuChange(e) {
-    this.setState({menuaction: e.key});
+    
+    let panel = 0;
+    if(e.key == 1 || e.key ==2) panel = 0;
+    if(e.key == 3) {
+        if(this.props.balance!=null) panel =2;
+        else {
+          this.props.changeRegisterPopup(true);
+        }
+    }
+
+    
+    this.setState({menuaction: e.key, mainPanel : panel});
   }
 
+  setChangePanel(x){
+    this.setState({mainPanel : x});
+  }
   handleMessageEnter(e) {
     let charCode = e.keyCode || e.which;
     if (!e.shiftKey) {
@@ -65,6 +89,21 @@ class Main extends React.Component {
     if (isAuthenticated()) {
       return <Redirect to="/login" />;
     }
+    let menuComp = (<div></div>);//
+    let panelComp = (<div></div>);//
+    if(this.state.menuaction ==1) menuComp = (<ChatList/>);
+    if(this.state.menuaction ==2) menuComp =(<AddressBook/>);
+    if(this.state.menuaction ==3) menuComp =(<WalletMenu setChangePanel = {this.setChangePanel} />);
+    if(this.state.mainPanel == 0) panelComp = (<div className='chat-container' style={{padding: 0}}>
+            <ChatHeader/>
+            <MessagePanel/>
+            <div className='chat-footer'>
+              <TextArea id="messageTextArea" onPressEnter={this.handleMessageEnter} rows={1} placeholder="Type a new message" ref="messageTextArea"/>
+              <Button type="primary" onClick={this.handleSendClick}>Send</Button>
+            </div>
+            </div>);//
+    if(this.state.mainPanel ==1) panelComp = (<Transactions/>);
+    if(this.state.mainPanel ==2) panelComp = (<FullProfile/>);
     return (
       <div style={{height: 100 + 'vh'}}>
         <Layout>
@@ -85,25 +124,25 @@ class Main extends React.Component {
               <Menu.Item key="2">
                 <Icon type="bars" style={{fontSize: 30}}/>
               </Menu.Item>
-              <button style = {{width : "80px", height: "40px", color: "black"}}
-                onClick ={e=>{
+              <Menu.Item key="3">
+                <Icon type="wallet" style={{fontSize: 30}}/>
+              </Menu.Item>
+              {(this.props.balance!=null)?(
+                <div style={{marginLeft : '15px'}}>
+                <div onClick = {e => {
+                this.props.changeTopupPopup(true)
+                  }
+                }>
+                <Icon type="arrow-down" style={{fontSize: "30px",marginLeft: "10px" , cursor : "pointer"}} />
+                </div>
+                </div>):(<div/>)
+              }
+              {(this.props.balance!=null)?(<Topup/>):(<div/>)}
 
-                  api.get('http://localhost:8081/api/wallet/protected/getBalance',null)
-                  .then(res=> {alert(JSON.stringify(res));});
-                }}>balance</button>
-                <button style = {{width : "80px", height: "40px", color: "black"}}
-                onClick ={e=>{
-                
-                  api.get('http://localhost:8081/api/wallet/protected/profile',null)
-                  .then(res=> {alert(JSON.stringify(res));});
-                }}>profile</button>
-                  <button style = {{width : "80px", height: "40px", color: "black"}}
-                onClick ={e=>{
-                  let payload ={hashedPin : 'e10adc3949ba59abbe56e057f20f883e', identity: '211122223',
-                  email : 'xyz@gmail.com' , phone :'2000111100'};
-                  api.post('http://localhost:8081/api/wallet/protected/registerWallet',JSON.stringify(payload))
-                  .then(res=> {alert(JSON.stringify(res));});
-                }}>registerWallet</button>
+              <TransferForm/>
+              <PinForm/>
+              <SendGift/>
+              <RegisterWalletForm/>
             </Menu>
           </Sider>
           <Sider
@@ -117,20 +156,12 @@ class Main extends React.Component {
           >
             <Profile/>
             <div className="menu-separation"/>
-            {this.state.menuaction == 1 ? (
-              <ChatList/>
-            ) : (
-              <AddressBook/>
-            )}
+            {menuComp}
+            
+            
           </Sider>
-          <div className='chat-container' style={{padding: 0}}>
-            <ChatHeader/>
-            <MessagePanel/>
-            <div className='chat-footer'>
-              <TextArea id="messageTextArea" onPressEnter={this.handleMessageEnter} rows={1} placeholder="Type a new message" ref="messageTextArea"/>
-              <Button type="primary" onClick={this.handleSendClick}>Send</Button>
-            </div>
-          </div>
+          {panelComp}
+         
         </Layout>
       </div>
     );
@@ -139,7 +170,8 @@ class Main extends React.Component {
 
 function mapStateToProps(state) {
   return {
-      userName: state.userReducer.userName
+      userName: state.userReducer.userName,
+      balance : state.walletReducer.balance
   }
 }
 
@@ -156,8 +188,9 @@ function mapDispatchToProps(dispatch) {
     },
     submitChatMessage(message) {
       dispatch(submitChatMessage(message))
-    }
-
+    },
+    changeTopupPopup : state => dispatch(setTopupPopup(state)),
+    changeRegisterPopup :state => dispatch(setRegisterPopup(state))
   }
 }
 

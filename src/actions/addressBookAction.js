@@ -69,7 +69,8 @@ export function receiveAddFriendResult(result) {
       'userId': result.data.data.item.userId,
       'avatar': processUsernameForAvatar(result.data.data.item.name),
       'status': result.data.data.item.status,
-      'isOnline': result.data.data.item.online
+      'isOnline': result.data.data.item.online,
+      'wallet' :result.data.data.item.wallet
     };
 
     newAddressBookList.push(newFriend);
@@ -140,7 +141,8 @@ function getAddressBookList() {
             'userId': items[index].userId,
             'avatar': processUsernameForAvatar(items[index].name),
             'status': items[index].status,
-            'isOnline': items[index].online
+            'isOnline': items[index].online,
+            'wallet' : items[index].wallet
           }
           if (items[index].online) {
             onlineResults.push(addressbookItem);

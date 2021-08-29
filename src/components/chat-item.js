@@ -1,8 +1,12 @@
 import React from 'react';
 import CustomAvatar from "./custom-avatar";
-import {Popover} from "antd";
+import {Icon,message} from "antd";
 import {SlideDown} from "react-slidedown";
 import {api} from '../api/api';
+import {Table} from 'react-bootstrap';
+import P2PForm from './p2pform';
+import {formatMoney} from '../utils/myutils';
+
 class ChatItem extends React.Component {
   constructor(props) {
     super(props);
@@ -12,7 +16,7 @@ class ChatItem extends React.Component {
     this.handleItemClick = this.handleItemClick.bind(this);
     this.receivePresent = this.receivePresent.bind(this);
   };
-
+  
   handleItemClick(e) {
     let newState = this.state.showDate;
 
@@ -26,8 +30,8 @@ class ChatItem extends React.Component {
     })
   }
 
-  receivePresent(present){
-    var arr = present.split(':');
+  receivePresent(arr){
+    
     var del = Date.now() - parseInt(arr[5]);
     
     if(del > 86400000) {
@@ -39,7 +43,12 @@ class ChatItem extends React.Component {
     var url = 'http://localhost:8081/api/wallet/protected/receivePresent';
     api.post(url, JSON.stringify(payload))
     .then(res=>{
-      alert(JSON.stringify(res));
+
+        if('data' in res.data) {
+          let msg = 'Congratulation ! You have received '+res.data.data.amount +' VND';
+          message.success(msg);
+        }
+        else message.success(res.data.error);
     });
     
   }
@@ -47,39 +56,63 @@ class ChatItem extends React.Component {
   render() {
     var cssClass;  var cssContentClass;
     var type= this.props.type;
-    // = this.props.type == 1 ? 'chat-item-owner' : 'chat-item-other';
+
     if(type==1) {cssClass = 'chat-item-owner'; cssContentClass = 'chat-item-content-owner';}
     if(type==2) {cssClass = 'chat-item-other'; cssContentClass = 'chat-item-content-other';}
-    if(type==3) {cssClass = 'chat-item-system'; cssContentClass = 'chat-item-content-system';}
-    // = this.props.type == 1 ? 'chat-item-content-owner' : 'chat-item-content-other';
-    var result =(<div></div>);//
-    if(type==1 || type==2){
-      result = ( <div onClick={this.handleItemClick} className={'chat-item chat-item-outer ' + cssClass}>
-        <div className={'chat-item ' + cssClass}>
-          <CustomAvatar type="chat-avatar" avatar={this.props.avatar} show={this.props.showavatar}/>
-          <div className={'chat-item-content ' + cssContentClass}>{this.props.value}</div>
-        </div>
-        {this.state.showDate ?
-          <SlideDown>
-          <div className={'chat-item-date'}>{this.props.date}</div>
-          </SlideDown>
-          : ''}
-      </div>);//
-    }
-    if(type==3){
+    if(type==3 || type == 4) {cssClass = 'chat-item-system'; cssContentClass = 'chat-item-content-system';}
 
-      result = ( <div onClick={e=> this.receivePresent(this.props.value)} className={'chat-item chat-item-outer ' + cssClass}>
+    var result =(<div></div>);//
+    let content,note;
+    if(type<=2) {
+      content = (<div onClick={this.handleItemClick}>{this.props.value}</div>);//
+   
+      note = this.props.date;
+    }  
+    if(type==3){
+      let arr= this.props.value.split(':');
+
+      content = (<div>
+      <Table striped bordered hover>
+      <thead><tr ><td colspan="2"><Icon style={{fontSize : "150%"}} type="transaction"/>  Transfer Info</td></tr></thead>
+      <tbody>
+
+      <tr><td style= {{}}>Transaction Code</td><td>{arr[1]}</td></tr>
+      <tr><td>Sender</td><td>{arr[2]}</td></tr>
+      <tr><td>Receiver</td><td>{arr[3]}</td></tr>
+      <tr><td>Amount</td><td>{formatMoney(parseInt(arr[4]))} VND</td></tr>
+      <tr><td>DateTime</td><td>{this.props.date}</td></tr>
+      </tbody>
+      </Table>
+      </div>);//
+      note = '';
+    }
+    if(type==4){
+      let arr = this.props.value.split(':');
+      content = (<div className={'chat-item-content ' + cssContentClass} style={{width:200}}>
+        <div>
+        <div onClick={e => this.receivePresent(arr)}> 
+        <img src={require("../gift.svg")}/>
+        </div>
+        <div onClick ={this.handleItemClick}> From {arr[3]} detail</div>
+        </div>
+        </div>);///
+      note = 'Total gift ' + formatMoney(parseInt(arr[4])) + ' VND start '+ this.props.date;
+    }
+
+    result = (<div className={'chat-item chat-item-outer ' + cssClass}>
         <div className={'chat-item ' + cssClass}>
           <CustomAvatar type="chat-avatar" avatar={this.props.avatar} show={this.props.showavatar}/>
-          <div className={'chat-item-content ' + cssContentClass}>{this.props.value}</div>
+          {(type==4)?(content):( <div className={'chat-item-content ' + cssContentClass} >{content}</div>)}
+         
         </div>
-        {this.state.showDate ?
+        {(this.state.showDate)?
           <SlideDown>
-          <div className={'chat-item-date'}>{this.props.date}</div>
+          <div className={'chat-item-date'}>{note}</div>
           </SlideDown>
-          : ''}
-      </div>);      
-    }
+          :''}
+      </div>);//
+   
+  
     return result;
   }
 };

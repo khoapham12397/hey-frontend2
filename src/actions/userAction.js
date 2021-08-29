@@ -42,6 +42,11 @@ export function registerSucceeded(user) {
   message.success('Register successfully. You can proceed to login with your account :)');
   return {type: REGISTER_SUCCEEDED, user: user};
 }
+// danh sach nhung lan nap tien ??
+// danh sach dang kia ?/
+// dung vau d:
+// cai thu 2 la gi ??
+// dung vay d
 
 export function receivedUserProfile(result) {
   var status = "You are online";
@@ -82,3 +87,4 @@ function createChangeStatusRequest(status) {
   }
   return req;
 }
+

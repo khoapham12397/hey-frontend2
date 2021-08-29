@@ -67,6 +67,12 @@ export function closeWebSocket() {
   store.getState().chatReducer.webSocket.close();
   return {type: EMPTY};
 }
+// dieu nay thi hieu con me no roi d??
+// dung la the nay nhung cai nao can truy xuat tu external => can co cai gi ??
+// dung lvay do :
+// vi du the nay ney :
+// dung roi do :
+// dieu do duoc lam do :
 
 export function loadChatList() {
   return function (dispatch) {
@@ -76,6 +82,9 @@ export function loadChatList() {
     });
   }
 }
+// khi ma loadChatList thi ro rang call() loadChatList() => no tuong tu ??
+// no cung gion voi viec call cai kia dung v idu : la the nao ?/
+
 
 export function reloadChatList() {
   return function (dispatch) {
@@ -121,6 +130,7 @@ export function submitChatMessage(message) {
 
 export function receivedChatlist(chatlist) {
   const fetchedChatlist = chatlist;
+
   let header = {};
   if (fetchedChatlist.length > 0) {
     header = {
@@ -130,7 +140,7 @@ export function receivedChatlist(chatlist) {
     };
     store.dispatch(specialLoadChatContainer(fetchedChatlist[0].sessionId));
   }
-
+  
   return {type: CHATLIST_FETCHED, fetchedChatlist: fetchedChatlist, messageHeader: header};
 }
 
@@ -164,18 +174,15 @@ export function receivedNewMessage(message) {
     if (messageItems.length > 0 && messageItems[0].type == type && messageItems[0].userId == message.userId) {
       showAvatar = false;
     }
-   // let x = message.message;
-   // let msg = message.message;
+  
 
     if(message.msgType != 'undefined'){
-       // let arr= x.split(':');
         if(message.msgType == 1){
- //         msg = "Transaction "+ arr[1] +":["+ arr[2] +" SEND "+arr[3]+" AMOUNT "+ arr[4] +"]";
           type=3;
           showAvatar =false;
         }
         if(message.msgType==2){
-          type = 3;
+          type = 4;
           showAvatar= false;
         }
     }
@@ -366,6 +373,8 @@ function getMessageItems(chatItems) {
     }
     var x = chatItems[i].message;
     //let msg = x;
+    // ca 2 cai deu la 3 dieu nay la lo nen ???
+    // dun gay 
     if(chatItems[i].msgType != 'undefined'){
         let arr= x.split(':');
         if(chatItems[i].msgType == 1){
@@ -374,13 +383,12 @@ function getMessageItems(chatItems) {
           showAvatar =false;
         }
         if(chatItems[i].msgType==2){
-          type = 3;
+          type = 4;
           showAvatar= false;
         }
     }
     
    
-    // neu ma minh chinh code lai ?/ the nay:
 
     //if(arr.length == 4 && arr[0]=='PRESENT')    
     var messageItem = {
@@ -406,6 +414,7 @@ function getChatList() {
         var results = [];
         for (var index = 0; index < items.length; ++index) {
           var chatItem = {
+            'userId' : items[index].userId,
             'name': items[index].name,
             'sessionId': items[index].sessionId,
             'avatar': processUsernameForAvatar(items[index].name),
@@ -465,22 +474,3 @@ function createWaitingChatHeaderRequest(usernames) {
   }
   return req;
 }
-// khi do can set cai gi ??
-// dung gvay d:
-// dieu nen xem lai :
-
-// vi du muon xem duoc cai gi ??
-// thi sao ??
-// dung vay do :
-// vi du ve thong tin bien dong so du cua 1 nguoi :??
-// tu do la duoc thoi dung vay do sau do the nao ???
-// tai sao ko can set la failed(ar.cause()) -> khi do de dang hn :
-
-// dung chua 
-// van de nay se don gian hon la the nay ??
-// dau tien ta can xay dung cai gi ??
-// sau do add no vao trong thang ben kia ???
-// du hieu roi do ??
-// nen dat o phia cuoi cung luon cung duoc ??
-// dieu nay ok do ???
-// cung duc thou 

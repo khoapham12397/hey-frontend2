@@ -114,9 +114,23 @@ function mapDispatchToProps(dispatch) {
     }
   }
 }
+// diem dac biet la no van nam ben trong cua thang nay dung la vay:
+// tu do the nai ??
+// may cai nay cung kha la dac biet dung :
+// tu do the nao ??
+// dung vya d
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(StartChatGroup);
 // chuc nang do chua dung duoc :
+
+// component nay no co 1 thu goi la visible cho cai modal ??
+// do do the nao ?
+// co the hien dang lich su giao dich dung ya :
+// tu do co the lam duoc ??
+// dung vya :
+//  van co the dung jquery duoc dung vya :
+// sau do the nao ??
+// dung do :

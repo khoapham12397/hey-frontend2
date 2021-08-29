@@ -314,7 +314,7 @@
 .chat-content .chat-item-system {
     display: inline-block;
     text-align: center;   
-    margin-left: 200px;
+   
 }
 
 
@@ -322,8 +322,8 @@
 
 
 .chat-content .chat-item-content-system {
-    background-color: #000055;
-    color: white;
+    background-color:#fff;
+    color: black;
     font-size: 16px;
 }
 

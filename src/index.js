@@ -20,6 +20,9 @@ export const store = createStore(rootReducer,
   )
 );
 window.store = store;
+// dieu nay rat hay do ??
+// dung vay do :
+// sau do the nay data => no call den dau ?/
 
 api.post(`/api/protected/ping`).then((data) => {
   console.log("ping");
