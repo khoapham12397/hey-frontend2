@@ -93,7 +93,9 @@ class ChatItem extends React.Component {
         <div onClick={e => this.receivePresent(arr)}> 
         <img src={require("../gift.svg")}/>
         </div>
-        <div onClick ={this.handleItemClick}> From {arr[3]} detail</div>
+        <div onClick ={this.handleItemClick}> From {arr[3]}
+        <div><span style={{fontSize : 13}}> click to detail </span></div>
+        </div>
         </div>
         </div>);///
       note = 'Total gift ' + formatMoney(parseInt(arr[4])) + ' VND start '+ this.props.date;

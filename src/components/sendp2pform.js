@@ -16,12 +16,16 @@ class SendP2PForm extends Component{
 
   handleOk(event){
     var amount = $('#amount_transfer').val();
-    alert(this.props.transfer.userId + " " + this.props.transfer.name);  
     var request = {userId: this.props.transfer.userId, amount: amount ,message : $('#message_transfer').val(),
-      type: 'transfer', name : this.props.transfer.name };         
-    this.props.changeRequest(request);
-    this.props.changeTransferPopup(false);
-    this.props.changePinPopup(true);
+      type: 'transfer', name : this.props.transfer.name };    
+    if(this.props.balance < amount) {
+      message.error("Your balance is not enought");
+    }
+    else{
+      this.props.changeRequest(request);
+      this.props.changeTransferPopup(false);
+      this.props.changePinPopup(true);
+    }
   }
 
   handleCancel(event){
@@ -83,6 +87,7 @@ class SendP2PForm extends Component{
 
 function mapStateToProps(state){
   return {
+    balance : state.walletReducer.balance,
     transfer: state.walletReducer.transfer,
     transferPopup : state.walletReducer.transferPopup
   }

@@ -49,7 +49,7 @@ export function registerWallet(req){
 		if('data' in res.data) {
 			if(res.data.data.code) {
 			message.success('Register successfully');
-			store.dispatch({type : CHECK_WALLET, result: true});
+			store.dispatch({type : CHANGE_BALANCE, balance: 0});
 
 			}
 			else message.error(res.data.data.message);
@@ -129,7 +129,7 @@ export function sendGift(request){
 	return function(dispatch){
 		callSendGift(request)
 		.then(res=> {
-			if('data' in res.data) message.success(res.data.data.message);
+			if('data' in res.data) message.success("Create LuckyMoney Successfully");
 			else message.error(res.data.error);
 
 		})

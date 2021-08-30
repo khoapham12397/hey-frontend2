@@ -27,13 +27,13 @@ class NormalWalletMenu extends React.Component{
 		
 			case "2": 
 				let end = new Date().getTime();
-				this.props.getTopups(end- 24*3600*1000,end);
+				this.props.getTopups(end,end);
 				this.props.setChangePanel(1);
 				break;
 			
 			case "3":
 				end = new Date().getTime();
-				this.props.getP2Ps(end-24*3600*1000,end);
+				this.props.getP2Ps(end,end,2);
 				this.props.setChangePanel(1);
 				break;
 			
@@ -79,7 +79,6 @@ class NormalWalletMenu extends React.Component{
 
 function mapStateToProps(state){
 	return {
-		existWallet : state.walletReducer.existWallet,
 		balance : state.walletReducer.balance
 	}
 }

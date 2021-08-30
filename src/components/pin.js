@@ -40,9 +40,16 @@ class Pin extends React.Component {
         ...this.props.request,
         "pin": md5(this.state.pin)
     }
-    alert(this.props.request.amount +" "+ this.props.request.type);
+    
+    request.message = null;
+    //alert(this.props.request.amount +" "+ this.props.request.type);
+
     const type = request.type
+    
     delete request.type;
+    
+    if(type=='sendLuckyMoney') delete request.message;
+
     switch (type){
         case "topUp":
             this.props.topUpWallet(request);
