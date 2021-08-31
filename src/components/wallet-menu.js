@@ -20,13 +20,14 @@ class NormalWalletMenu extends React.Component{
 	}
 
 	handleMainMenuChange(e){
+		let end; 
 		switch(e.key){
 			case "1":
 				if(this.props.balance!=null) this.props.setChangePanel(2);
 				break;
 		
 			case "2": 
-				let end = new Date().getTime();
+				end = new Date().getTime();
 				this.props.getTopups(end,end);
 				this.props.setChangePanel(1);
 				break;
@@ -36,7 +37,6 @@ class NormalWalletMenu extends React.Component{
 				this.props.getP2Ps(end,end,2);
 				this.props.setChangePanel(1);
 				break;
-			
 			
 			default: 
 				break;
